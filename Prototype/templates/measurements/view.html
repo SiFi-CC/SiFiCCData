@@ -1,0 +1,61 @@
+{% load timestamp_to_time %}
+<h1>Measurement Id: {{ measurement.id }}</h1>
+<canvas id="geometry" width="300" height="100"></canvas>
+<ul>
+    <li>Series: {{ measurement.series }}</li>
+    <li>Directory: {{ measurement.datadir }}</li>
+    <li>Start time: {{ measurement.start_time }}</li>
+    <li>Stop time: {{ measurement.stop_time }}</li>
+    <li>Duration: {{ measurement.duration }} s </li>
+    <li>Source position: {{ measurement.source_pos }}</li>
+</ul>
+
+<h1>Reconstruction</h1>
+
+<img width="100%" src="/media{{ measurement.datadir|slice:"9:" }}/settingsPET/figures/source_raw_ordered_{{ measurement.datadir|slice:"46:" }}.png" />
+<img width="100%" src="/media{{ measurement.datadir|slice:"9:" }}/settingsPET/figures/source_bgfree_ordered_{{ measurement.datadir|slice:"46:" }}.png" />
+<img width="100%" src="/media{{ measurement.datadir|slice:"9:" }}/settingsPET/figures/source_bgfree_efficiency_ordered_{{ measurement.datadir|slice:"46:" }}.png" />
+<img width="100%" src="/media{{ measurement.datadir|slice:"9:" }}/settingsPET/figures/reco_ordered_{{ measurement.datadir|slice:"46:" }}.png" />
+
+<script>
+    fetch("/SiFiCCData/Prototype/geometry/{{ measurement.id }}/")
+    .then(res => res.json() )
+    .then(data => {
+        console.log(data);
+        var c = document.getElementById("geometry");
+        var ctx = c.getContext("2d");
+        const y_offset = 50;
+        ctx.beginPath();
+        ctx.moveTo(0, y_offset); ctx.lineTo(300, y_offset);
+        ctx.fillText("y", 0, 5);
+        ctx.fillText("z", 295, 45);
+        ctx.stroke(); 
+        for(const [key, val] of Object.entries(data) ) {
+            if(key == "source") {
+                ctx.beginPath();
+                data['source'].forEach(function(s) {
+                    ctx.arc(s[2], y_offset+s[1], 5, 0, Math.PI * 2, true);
+                });
+                ctx.fillText(key, 0, 100);
+                ctx.stroke(); 
+            }
+            ctx.beginPath();
+            if(key == "absorber") {
+                ctx.moveTo(val[2], y_offset - 24); ctx.lineTo(val[2], y_offset + 24);
+            } else if(key == "mask") {
+                ctx.moveTo(val[2], y_offset - 35); ctx.lineTo(val[2], y_offset + 35);
+            } else {
+                ctx.moveTo(val[2], y_offset - 20); ctx.lineTo(val[2], y_offset + 20);
+            }
+            ctx.fillText(key, val[2], 100);
+            ctx.stroke(); 
+        }
+//        data['source'].forEach(function(s) {
+//            ctx.arc(s[0], 50, 5, 0, Math.PI * 2, true);
+//        });
+//        ctx.moveTo(0, 50); ctx.lineTo(300, 50);
+//        ctx.moveTo(data['mask'][2], 25); ctx.lineTo(170, 75);
+//        ctx.moveTo(data['absorber'][2], 25); ctx.lineTo(227.5, 75);
+        ctx.stroke(); 
+    })
+</script>
