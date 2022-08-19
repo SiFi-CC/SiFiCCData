@@ -53,10 +53,21 @@ class MeasurementsViewSet(viewsets.ModelViewSet):
         if pk is not None:
             try:
                 measurement = Measurement.objects.get(pk=pk)
-                measurement.source_pos = request.data['source_pos']
-                measurement.save()
+                #update stop_time, and calculate duration when run ends
+                if measurement.stop_time == measurement.start_time:
+                    measurement.save()
+                    timedelta = measurement.stop_time - measurement.start_time
+                    measurement.duration = timedelta.seconds / 60
+                    measurement.save()
             except:
                 raise Http404("Data does not exist.")
+        else:
+            #create new run row
+            measurement = Measurement()
+            measurement.series = request.data['series']
+            measurement.datadir = request.data['datadir']
+            measurement.source_pos = request.data['source_pos']
+            measurement.save()
         return JsonResponse({"success":200})
 class FibersViewSet(viewsets.ModelViewSet):
     queryset = Fiber.objects.all()

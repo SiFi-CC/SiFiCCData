@@ -43,13 +43,6 @@ class Measurement(models.Model):
     result = models.ImageField(upload_to="results/", blank=True, null=True)
     def __str__(self):
         return "%s" % (self.id)
-    def save(self, *args, **kwargs):
-        self.datadir = "/scratch2/data"
-        super(Measurement, self).save(*args, **kwargs)
-        if self.duration is None:
-            timedelta = self.stop_time - self.start_time
-            self.duration = timedelta.seconds / 60
-            super(Measurement, self).save(*args, **kwargs)
 
 class Fiber(models.Model):
     measurement = models.ForeignKey(Measurement, on_delete=models.CASCADE)
