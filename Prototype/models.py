@@ -31,6 +31,7 @@ class Series(models.Model):
     class Meta:
         verbose_name = _("Series")
         verbose_name_plural = _("Series")
+        ordering = ('-id',)
 
 class Measurement(models.Model):
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
