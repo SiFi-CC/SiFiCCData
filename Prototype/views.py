@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from .models import *
 from .serializers import *
 from rest_framework import viewsets, permissions
@@ -30,7 +30,7 @@ def index(request):
         measurements = Measurement.objects.all()
         paginator = Paginator(measurements, 25)
     except:
-        raise Http404("Measurement does not exist.")
+        raise Http404("Data does not exist.")
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'measurements/index.html', {'page_obj': page_obj})
@@ -49,6 +49,15 @@ class MeasurementsViewSet(viewsets.ModelViewSet):
     queryset = Measurement.objects.all()
     serializer_class = MeasurementSerializer
     permission_classes = [permissions.IsAuthenticated]
+    def post(self, request, pk, format=None):
+        if pk is not None:
+            try:
+                measurement = Measurement.objects.get(pk=pk)
+                measurement.source_pos = request.data['source_pos']
+                measurement.save()
+            except:
+                raise Http404("Data does not exist.")
+        return JsonResponse({"success":200})
 class FibersViewSet(viewsets.ModelViewSet):
     queryset = Fiber.objects.all()
     serializer_class = FiberSerializer

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext as _
+from datetime import datetime
 
 # Create your models here.
 class Series(models.Model):
@@ -34,13 +35,20 @@ class Series(models.Model):
 class Measurement(models.Model):
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
     datadir = models.TextField(blank=True, null=True)
-    start_time = models.DateTimeField(auto_now=True)
-    stop_time = models.DateTimeField(blank=True, null=True)
+    start_time = models.DateTimeField(auto_now_add=True)
+    stop_time = models.DateTimeField(auto_now=True)
     duration = models.IntegerField(blank=True, null=True)
     source_pos = models.TextField(blank=True, null=True)
     result = models.ImageField(upload_to="results/", blank=True, null=True)
     def __str__(self):
         return "%s" % (self.id)
+    def save(self, *args, **kwargs):
+        self.datadir = "/scratch2/data"
+        super(Measurement, self).save(*args, **kwargs)
+        if self.duration is None:
+            timedelta = self.stop_time - self.start_time
+            self.duration = timedelta.seconds / 60
+            super(Measurement, self).save(*args, **kwargs)
 
 class Fiber(models.Model):
     measurement = models.ForeignKey(Measurement, on_delete=models.CASCADE)
