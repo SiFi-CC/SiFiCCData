@@ -4,6 +4,7 @@ from django.http import JsonResponse, Http404
 from .models import *
 from .serializers import *
 from rest_framework import viewsets, permissions
+from rest_framework.response import Response
 # Create your views here.
 def geometry(request, measurement_id):
     try:
@@ -45,6 +46,12 @@ class SeriesViewSet(viewsets.ModelViewSet):
     queryset = Series.objects.all()
     serializer_class = SeriesSerializer
     permission_classes = [permissions.IsAuthenticated]
+    def list(self, request):
+        q = self.request.query_params.get('q')
+        if q == "list":
+            self._paginator = None
+            queryset = Series.objects.values_list('id', flat=True)
+            return Response(queryset)
 class MeasurementsViewSet(viewsets.ModelViewSet):
     queryset = Measurement.objects.all()
     serializer_class = MeasurementSerializer
