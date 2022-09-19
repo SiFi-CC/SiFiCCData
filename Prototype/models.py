@@ -40,7 +40,6 @@ class Measurement(models.Model):
     stop_time = models.DateTimeField(auto_now=True)
     duration = models.IntegerField(blank=True, null=True)
     source_pos = models.TextField(blank=True, null=True)
-    result = models.ImageField(upload_to="results/", blank=True, null=True)
     def __str__(self):
         return "%s" % (self.id)
 
