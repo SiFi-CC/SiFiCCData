@@ -46,13 +46,13 @@ class MeasurementAdmin(admin.ModelAdmin):
       uri = urllib.parse.quote(string)
       return format_html('<img class="photo" style="height: 20px;" src="data:;base64,{}">', uri)
   list_display.append('get_fibers')
-  def get_result(self, obj):
-      html = ""
-      if obj.result is not None:
-          html = format_html('<img class="photo" style="height: 100px;" src="/media/{}"/>', obj.result)
-      return html
-  list_display.remove('result')
-  list_display.append('get_result')
+#  def get_result(self, obj):
+#      html = ""
+#      if obj.result is not None:
+#          html = format_html('<img class="photo" style="height: 100px;" src="/media/{}"/>', obj.result)
+#      return html
+#  list_display.remove('result')
+#  list_display.append('get_result')
 @admin.register(Fiber)
 class FibersAdmin(admin.ModelAdmin):
   list_display = [field.name for field in Fiber._meta.get_fields()]
