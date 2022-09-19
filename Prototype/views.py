@@ -76,6 +76,12 @@ class MeasurementsViewSet(viewsets.ModelViewSet):
             measurement.source_pos = request.data['source_pos']
             measurement.save()
         return JsonResponse({"success":200})
+    def get_queryset(self):
+        q = self.request.query_params.get('q')
+        if q == "all":
+            self._paginator = None
+        queryset = Measurement.objects.all()
+        return queryset
 class FibersViewSet(viewsets.ModelViewSet):
     queryset = Fiber.objects.all()
     serializer_class = FiberSerializer
