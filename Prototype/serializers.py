@@ -1,17 +1,19 @@
 from .models import *
 from rest_framework import serializers
 
-class SeriesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Series
-        fields = '__all__'
-class MeasurementSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Measurement
-        fields = '__all__'
 class FiberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fiber
+        fields = '__all__'
+class MeasurementSerializer(serializers.ModelSerializer):
+    fiber = FiberSerializer(many=True, read_only=True)
+    class Meta:
+        model = Measurement
+        fields = '__all__'
+class SeriesSerializer(serializers.ModelSerializer):
+    measurement = MeasurementSerializer(many=True, read_only=True)
+    class Meta:
+        model = Series
         fields = '__all__'
 class HypmedNeedleSerializer(serializers.ModelSerializer):
     class Meta:

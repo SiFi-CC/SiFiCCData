@@ -34,7 +34,7 @@ class Series(models.Model):
         ordering = ('-id',)
 
 class Measurement(models.Model):
-    series = models.ForeignKey(Series, on_delete=models.CASCADE)
+    series = models.ForeignKey(Series, on_delete=models.CASCADE, related_name="measurement")
     datadir = models.TextField(blank=True, null=True)
     start_time = models.DateTimeField(auto_now_add=True)
     stop_time = models.DateTimeField(auto_now=True)
@@ -44,7 +44,7 @@ class Measurement(models.Model):
         return "%s" % (self.id)
 
 class Fiber(models.Model):
-    measurement = models.ForeignKey(Measurement, on_delete=models.CASCADE)
+    measurement = models.ForeignKey(Measurement, on_delete=models.CASCADE, related_name="fiber")
     mod = models.IntegerField()
     lay = models.IntegerField()
     fib = models.IntegerField()
