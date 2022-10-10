@@ -13,7 +13,7 @@ class SeriesAdmin(admin.ModelAdmin):
   list_display = [field.name for field in Series._meta.get_fields()]
   list_display.remove('measurement')
   def get_measurements(self, obj):
-      return list(obj.measurement_set.all() )
+      return list(obj.measurement.all() )
   list_display.append('get_measurements')
 @admin.register(Measurement)
 class MeasurementAdmin(admin.ModelAdmin):
@@ -27,7 +27,7 @@ class MeasurementAdmin(admin.ModelAdmin):
   def get_fibers(self, obj):
       x = []
       y = []
-      coords = list(obj.fiber_set.values('lay', 'fib') )
+      coords = list(obj.fiber.values('lay', 'fib') )
       for coord in coords:
           x.append(coord['fib'])
           y.append(coord['lay'])

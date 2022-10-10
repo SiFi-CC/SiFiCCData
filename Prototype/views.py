@@ -116,6 +116,16 @@ class CalibPeakFittingsViewSet(viewsets.ModelViewSet):
     queryset = CalibPeakFitting.objects.all()
     serializer_class = CalibPeakFittingsSerializer
     permissions_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        queryset = CalibPeakFitting.objects.all()
+        if self.request.query_params.get('q'):
+            q = self.request.query_params.get('q')
+            if q == "all":
+                self._paginator = None
+            if q.isnumeric():
+                queryset = CalibPeakFitting.objects.filter(fiber_id=q)
+                self._paginator = None
+        return queryset
 class CalibPositionReconstructionsViewSet(viewsets.ModelViewSet):
     queryset = CalibPositionReconstruction.objects.all()
     serializer_class = CalibPositionReconstructionsSerializer
