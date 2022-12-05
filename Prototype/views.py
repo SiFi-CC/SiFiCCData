@@ -80,7 +80,11 @@ class MeasurementsViewSet(viewsets.ModelViewSet):
         q = self.request.query_params.get('q')
         if q == "all":
             self._paginator = None
-        queryset = Measurement.objects.all()
+            queryset = Measurement.objects.all()
+        if q == "last_inserted_id":
+            self._paginator = None
+            # get last inserted Measurement
+            queryset = Measurement.objects.all().order_by('-id')[:1]
         return queryset
 class FibersViewSet(viewsets.ModelViewSet):
     queryset = Fiber.objects.all()
