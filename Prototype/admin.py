@@ -10,6 +10,13 @@ from django.utils.html import format_html
 
 @admin.register(Series)
 class SeriesAdmin(admin.ModelAdmin):
+  @admin.action(description='Clone selected series')
+  def clone(modeladmin, request, queryset):
+      for q in queryset:
+        obj = Series.objects.get(pk=q.id)
+        obj.pk = None
+        obj.save()
+  actions = [clone]
   list_display = [field.name for field in Series._meta.get_fields()]
   list_display.remove('measurement')
   def get_measurements(self, obj):
