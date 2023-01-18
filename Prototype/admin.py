@@ -22,6 +22,10 @@ class SeriesAdmin(admin.ModelAdmin):
   def get_measurements(self, obj):
       return list(obj.measurement.all() )
   list_display.append('get_measurements')
+@admin.register(DaqSettings)
+class DaqSettingsAdmin(admin.ModelAdmin):
+  list_display = [field.name for field in DaqSettings._meta.get_fields()]
+  list_display.remove('series')
 @admin.register(Measurement)
 class MeasurementAdmin(admin.ModelAdmin):
   formfield_overrides = {

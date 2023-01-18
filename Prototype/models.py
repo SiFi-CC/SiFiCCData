@@ -2,8 +2,25 @@ from django.db import models
 from django.utils.translation import gettext as _
 from datetime import datetime
 
+class DaqSettings(models.Model):
+    type = models.CharField(max_length=10, default="builtin")
+    threshold = models.IntegerField(default=1)
+    pre_window = models.IntegerField(default=3)
+    post_window = models.IntegerField(default=15)
+    coincidence_window = models.IntegerField(default=3)
+    single_acceptance_period = models.IntegerField(default=1000)
+    single_acceptance_length = models.IntegerField(default=0)
+    global_disc_lsb_T1 = models.IntegerField(default=60)
+    def __str__(self):
+        return "%s" % (self.id)
+    class Meta:
+        verbose_name = _("DAQ Settings")
+        verbose_name_plural = ("DAQ Settings")
+        ordering = ('-id',)
+
 # Create your models here.
 class Series(models.Model):
+    daq_settings = models.ForeignKey(DaqSettings, on_delete=models.CASCADE, related_name="series", null=True)
     detector = models.CharField(max_length=255, default="Arrays")
     fiber_mat = models.CharField(max_length=255, default="LYSO:Ca:Ce")
     fiber_dim = models.CharField(max_length=255, default="1.94;1.94;100")
