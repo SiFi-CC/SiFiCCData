@@ -35,6 +35,7 @@ class MeasurementAdmin(admin.ModelAdmin):
   list_display.remove('fiber')
   list_display.remove('calibhypmedposition')
   list_display.remove('calibhypmedenergy')
+  list_editable = ['type', 'datadir']
   def get_fibers(self, obj):
       x = []
       y = []
