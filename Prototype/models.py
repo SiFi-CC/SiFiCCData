@@ -51,6 +51,7 @@ class Series(models.Model):
         ordering = ('-id',)
 
 class Measurement(models.Model):
+    type = models.CharField(max_length=10, choices=(('beam', 'beam'), ('source', 'source'), ('background', 'background') ), default='beam')
     series = models.ForeignKey(Series, on_delete=models.CASCADE, related_name="measurement")
     datadir = models.TextField(blank=True, null=True)
     start_time = models.DateTimeField(auto_now_add=True)
