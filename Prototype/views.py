@@ -52,6 +52,12 @@ class SeriesViewSet(viewsets.ModelViewSet):
             self._paginator = None
             queryset = Series.objects.values_list('id', flat=True)
             return Response(queryset)
+        if q == "type":
+            self._paginator = None
+            run = self.request.query_params.get('measurement')
+            key = Measurement.objects.filter(id=run).values_list('series_id', flat=True)
+            queryset = Series.objects.filter(id=key[0]).values()
+            return Response(queryset)
 class MeasurementsViewSet(viewsets.ModelViewSet):
     queryset = Measurement.objects.all()
     serializer_class = MeasurementSerializer
