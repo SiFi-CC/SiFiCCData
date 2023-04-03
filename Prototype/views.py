@@ -83,7 +83,7 @@ class MeasurementsViewSet(viewsets.ModelViewSet):
             measurement.source_pos = request.data['source_pos']
             measurement.save()
         return JsonResponse({"success":200})
-    def get_queryset(self):
+    def list(self, request):
         q = self.request.query_params.get('q')
         if q == "all":
             self._paginator = None
@@ -92,7 +92,7 @@ class MeasurementsViewSet(viewsets.ModelViewSet):
             self._paginator = None
             # get last inserted Measurement
             queryset = Measurement.objects.all().order_by('-id')[:1]
-        return queryset
+        return Response(queryset.values() )
 class FibersViewSet(viewsets.ModelViewSet):
     queryset = Fiber.objects.all()
     serializer_class = FiberSerializer
