@@ -56,7 +56,8 @@ class Measurement(models.Model):
     start_time = models.DateTimeField(auto_now_add=True)
     stop_time = models.DateTimeField(auto_now=True)
     duration = models.IntegerField(blank=True, null=True)
-    source_pos = models.TextField(blank=True, null=True)
+    source_pos = models.TextField(blank=True, null=True, help_text="Source or Bragg peak position.")
+    description = models.TextField(blank=True, null=True, help_text="Catch-all for beam, source information.")
     def __str__(self):
         return "%s" % (self.id)
 
